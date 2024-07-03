@@ -11,13 +11,13 @@ Indic-Multilingual captioning solution by integrating Open AI's Whisper model wi
 * Preview and Download: Provides a preview of the video and allows downloading the video along with the subtitles.
 
 ## Libraries Used
-**streamlit:** For building the web application.
-**whisper:** For transcribing audio.
-**numpy:** For numerical operations.
-**srt:** For handling SRT subtitles.
-**pysrt:** For reading and writing SRT files.
-**time, timedelta:** For handling time-related operations.
-**pytube:** For downloading YouTube videos and audio.
-**moviepy:** For handling video files.
-**shutil:** For file operations.
-**transformers (AutoTokenizer, AutoModelForSeq2SeqLM):** For translation models.
+* **streamlit:** For building the web application.
+* **whisper:** For transcribing audio.
+* **numpy:** For numerical operations.
+* **srt:** For handling SRT subtitles.
+* **pysrt:** For reading and writing SRT files.
+* **time, timedelta:** For handling time-related operations.
+* **pytube:** For downloading YouTube videos and audio.
+* **moviepy:** For handling video files.
+* **shutil:** For file operations.
+* **transformers (AutoTokenizer, AutoModelForSeq2SeqLM):** For translation models.
