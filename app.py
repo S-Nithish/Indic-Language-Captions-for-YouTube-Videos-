@@ -7,6 +7,7 @@ from datetime import timedelta
 import pysrt
 import time
 from pytube import YouTube
+import yt_dlp as youtube_dl
 from moviepy.editor import VideoFileClip
 import os
 import shutil
@@ -86,6 +87,25 @@ def preview_video(video_file_path):
     # Display the temporary video file using st.video
     st.video(temp_video_path)
 
+# Function to download video and audio using yt-dlp
+def download_video_audio(youtube_link):
+    ydl_opts = {
+        'format': 'best',
+        'outtmpl': 'downloaded_video.%(ext)s',
+        'noplaylist': True,
+    }
+
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        info_dict = ydl.extract_info(youtube_link, download=True)
+        video_file_path = ydl.prepare_filename(info_dict)
+    
+    # Extract audio
+    audio_file_path = "downloaded_audio.mp3"
+    video_clip = VideoFileClip(video_file_path)
+    video_clip.audio.write_audiofile(audio_file_path)
+
+    return video_file_path, audio_file_path
+    
 # Main Streamlit app code
 def main():
     st.title("YouTube Video Transcription and Translation")
@@ -95,6 +115,12 @@ def main():
 
     if youtube_link:
         try:
+            with st.spinner("Downloading video and audio..."):
+                # Download the YouTube video and audio
+                video_file_path, audio_file_path = download_video_audio(youtube_link)
+                st.write("Video and Audio Downloaded.")
+
+            # Get video details
             yt = YouTube(youtube_link)
             video_title = yt.title
             video_author = yt.author
@@ -109,13 +135,6 @@ def main():
             target_language_code = prompt_user_for_language()
 
             if target_language_code is not None:
-                with st.spinner("Downloading video and audio..."):
-                    # Download the YouTube video and audio
-                    video_file_path = yt.streams.filter(progressive=True, file_extension='mp4').first().download(output_path=".", filename=f"{video_title}.mp4")
-                    audio_stream = yt.streams.filter(only_audio=True).first()
-                    audio_file_path = audio_stream.download(output_path=".", filename="youtube_audio")
-                    st.write("Video and Audio Downloaded.")
-
                 with st.spinner("Transcription process has begun..."):
                     # Transcribe the audio file
                     transcription_srt_content = transcribe_audio(audio_file_path, 'en')
